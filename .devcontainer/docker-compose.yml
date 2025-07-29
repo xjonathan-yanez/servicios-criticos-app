@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  # Servicio para la aplicación Node.js
+  app:
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    volumes:
+      # Sincroniza el código local con el del contenedor
+      - ..:/workspace:cached
+    # Mantiene el contenedor corriendo
+    command: sleep infinity
+    ports:
+      - "5001:5001"
+    depends_on:
+      - db
+    environment:
+      # Variables de entorno para la conexión a la BD
+      - DATABASE_HOST=db
+      - DATABASE_PORT=5434
+      - DATABASE_USER=${DATABASE_USER:-postgres}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD:-password}
+      - DATABASE_NAME=${DATABASE_NAME:-servicios_criticos_db}
+      - NODE_ENV=development
+
+  # Servicio para la base de datos PostgreSQL
+  db:
+    image: postgres:14-alpine
+    restart: unless-stopped
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=${DATABASE_USER:-postgres}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD:-password}
+      - POSTGRES_DB=${DATABASE_NAME:-servicios_criticos_db}
+    # Indica a PostgreSQL que escuche en el puerto 5434 dentro del contenedor
+    command: -p 5434
+    ports:
+      - "5434:5434"
+
+volumes:
+  postgres-data:

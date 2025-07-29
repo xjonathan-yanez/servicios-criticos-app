@@ -40,11 +40,17 @@ cp .env.example .env
 # Editar .env con tus configuraciones
 
 # Inicializar base de datos
-# Opción 1: Con Sequelize CLI (puede tener problemas con ES6)
-npm run db:reset
+npm run db:setup # O `npm run db:reset` para recrear todo
 
-# Opción 2: Script personalizado (recomendado para ES6)
-npm run init-db
+### ⚠️ Nota Importante sobre ES Modules y Sequelize
+Este proyecto utiliza ES Modules (`"type": "module"` en `package.json`). La versión actual de `sequelize-cli` (v6) requiere que los archivos de migración y seeder usen la extensión `.cjs` para ser compatibles.
+
+**Al crear una nueva migración o seeder:**
+1. Genera el archivo como de costumbre (ej: `npx sequelize-cli migration:generate --name create-new-table`).
+2. `sequelize-cli` creará un archivo con extensión `.js`.
+3. **Debes renombrar manualmente el archivo a `.cjs`** para que los comandos `npm run migrate` y `npm run seed` funcionen.
+
+Ejemplo: `migrations/xxxxxxxx-create-new-table.js` -> `migrations/xxxxxxxx-create-new-table.cjs`
 
 # Iniciar servidor
 npm run dev

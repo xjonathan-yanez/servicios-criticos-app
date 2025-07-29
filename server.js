@@ -11,7 +11,7 @@ import { generalLimiter } from './middleware/rateLimiter.js'
 dotenv.config()
 
 const app = express()
-const PORT = process.env.PORT || 5000
+const PORT = process.env.PORT || 5001
 
 // Middleware de seguridad
 app.use(helmet({

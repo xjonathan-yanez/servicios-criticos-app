@@ -1,26 +1,27 @@
 {
   "name": "Servicios Críticos API - Node.js",
-  "image": "mcr.microsoft.com/devcontainers/javascript-node:1-18-bookworm",
-  
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspace",
+
   "features": {
-      "ghcr.io/devcontainers/features/docker-in-docker:2": {},
-      "ghcr.io/devcontainers/features/git:1": {}
-  },
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/common-utils:1": {}
+},
 
-  "forwardPorts": [5000, 5432],
+  "forwardPorts": [5001, 5434],
 
-  "postCreateCommand": "npm install",
+  "postCreateCommand": "npm install && until pg_isready -h db -p 5434 -U ${DATABASE_USER:-postgres}; do echo 'Esperando que la base de datos esté lista...'; sleep 2; done && npm run db:reset",
 
   "customizations": {
-      "vscode": {
-          "extensions": [
-              "ms-vscode.vscode-json",
-              "esbenp.prettier-vscode",
-              "ms-vscode.vscode-typescript-next",
-              "humao.rest-client",
-              "rangav.vscode-thunder-client"
-          ]
-      }
+    "vscode": {
+      "extensions": [
+        "esbenp.prettier-vscode",
+        "humao.rest-client",
+        "ms-azuretools.vscode-docker",
+        "cweijan.vscode-postgresql"
+      ]
+    }
   },
 
   "shutdownAction": "stopContainer"
