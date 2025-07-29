@@ -18,7 +18,7 @@ services:
     environment:
       # Variables de entorno para la conexión a la BD
       - DATABASE_HOST=db
-      - DATABASE_PORT=5434
+      - DATABASE_PORT=5432
       - DATABASE_USER=${DATABASE_USER:-postgres}
       - DATABASE_PASSWORD=${DATABASE_PASSWORD:-password}
       - DATABASE_NAME=${DATABASE_NAME:-servicios_criticos_db}
@@ -26,18 +26,20 @@ services:
 
   # Servicio para la base de datos PostgreSQL
   db:
-    image: postgres:14-alpine
+    image: postgres:15
+    container_name: postgres_local
     restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: servicios_criticos_db
+    ports:
+      - "5435:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_USER=${DATABASE_USER:-postgres}
-      - POSTGRES_PASSWORD=${DATABASE_PASSWORD:-password}
-      - POSTGRES_DB=${DATABASE_NAME:-servicios_criticos_db}
-    # Indica a PostgreSQL que escuche en el puerto 5434 dentro del contenedor
-    command: -p 5434
-    ports:
-      - "5434:5434"
+      - ./postgresql.conf:/etc/postgresql/postgresql.conf
+      - ./pg_hba.conf:/etc/postgresql/pg_hba.conf
+    command: postgres -c config_file=/etc/postgresql/postgresql.conf
 
 volumes:
   postgres-data:
