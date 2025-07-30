@@ -25,6 +25,7 @@ API REST para la gestión de servicios críticos de emergencia, específicamente
 1. Abrir proyecto en VSCode
 2. Instalar extensión "Dev Containers"
 3. Ejecutar: `Dev Containers: Reopen in Container`
+4. Iniciar: npm run dev
 
 ### Instalación Manual
 ```bash
